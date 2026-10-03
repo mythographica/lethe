@@ -8,7 +8,21 @@ version = "0.1.0"
 description = "The cross-language mnemonica lineage contract: the lineage schema and the shared fixture, importable from Python."
 readme = "README.md"
 requires-python = ">=3.12"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ email = "went.out@gmail.com" }]
+keywords = ["mnemonica", "lineage", "provenance", "json-schema", "data-flow", "opentelemetry", "cross-language"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Typing :: Typed",
+]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/mythographica/lethe"
+Repository = "https://github.com/mythographica/lethe"
+Issues = "https://github.com/mythographica/lethe/issues"
 
 [tool.setuptools]
 packages = ["mnemonica_lethe"]
