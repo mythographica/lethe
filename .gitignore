@@ -8,3 +8,9 @@ coverage/
 .vscode/
 .idea/
 .DS_Store
+
+# Python (mnemonica-lethe packaging)
+__pycache__/
+.venv/
+*.egg-info/
+*.pyc
