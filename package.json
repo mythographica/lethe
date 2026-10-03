@@ -1,0 +1,40 @@
+{
+	"name": "@mnemonica/lethe",
+	"version": "0.1.0",
+	"description": "Cross-language contracts for mnemonica: the lineage graph JSON Schema and the shared fixture every implementation (JS, Go, Python) must reproduce.",
+	"keywords": [
+		"mnemonica",
+		"lineage",
+		"provenance",
+		"json-schema",
+		"data-flow",
+		"DFD",
+		"opentelemetry",
+		"cross-language",
+		"contract"
+	],
+	"author": "went.out@gmail.com",
+	"license": "MIT",
+	"homepage": "https://github.com/mythographica/lethe#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/mythographica/lethe.git"
+	},
+	"bugs": {
+		"url": "https://github.com/mythographica/lethe/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"files": [
+		"lineage.schema.json",
+		"testdata/lineage/fixture.json",
+		"testdata/lineage/README.md"
+	],
+	"scripts": {
+		"test": "node --test"
+	},
+	"devDependencies": {
+		"ajv": "^8.17.1"
+	}
+}
