@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mnemonica-lethe"
-version = "0.1.0"
-description = "The cross-language mnemonica lineage contract: the lineage schema and the shared fixture, importable from Python."
+version = "0.2.0"
+description = "The cross-language mnemonica lineage contract: the lineage and .tactica schemas as shared fixtures, importable from Python."
 readme = "README.md"
 requires-python = ">=3.12"
 license = "MIT"
