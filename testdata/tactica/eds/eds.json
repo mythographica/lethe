@@ -1,0 +1,62 @@
+{
+	"version": "1.0",
+	"eds": {
+		"EdsProbe": [
+			{
+				"location": "src/entities/eds-probe.entity.ts:18:15",
+				"kind": "wrap",
+				"code": "wrap((id: string) => {\n\t\tconst user = new UserEntity({\n\t\t\tid,\n\t\t\temail: `${id}@probe.local`,\n\t\t\tname",
+				"scope": "EdsProbe",
+				"fn": "wrap",
+				"label": "probe:fire",
+				"callbackScopeId": "src/entities/eds-probe.entity.ts:18:20",
+				"createsTypes": [
+					"UserEntity"
+				],
+				"scopeId": "src/entities/eds-probe.entity.ts:16:37"
+			}
+		],
+		"unknown": [
+			{
+				"location": "src/trace-exception.filter.ts:110:26",
+				"kind": "contextConsume",
+				"code": "getFlow(error)"
+			},
+			{
+				"location": "src/chaos.controller.ts:243:19",
+				"kind": "wrap",
+				"code": "wrap(() => {\n\t\t\tthrow new Error(`chaos-pure:${id}:${mark}`);\n\t\t}, 'chaos:pure-error')",
+				"fn": "wrap",
+				"label": "chaos:pure-error",
+				"callbackScopeId": "src/chaos.controller.ts:243:24",
+				"scopeId": "src/chaos.controller.ts:224:2"
+			}
+		],
+		"UserEntity": [
+			{
+				"location": "src/chaos.controller.ts:107:18",
+				"kind": "wrap",
+				"code": "wrap(() => {\n\t\t\tconst result = user.constructor.name;\n\t\t\treturn result;\n\t\t}, user, 'chaos:ok')",
+				"scope": "UserEntity",
+				"fn": "wrap",
+				"instanceArg": "user",
+				"label": "chaos:ok",
+				"callbackScopeId": "src/chaos.controller.ts:107:23",
+				"scopeId": "src/chaos.controller.ts:85:2",
+				"wrapsTypePath": "UserEntity"
+			},
+			{
+				"location": "src/chaos.controller.ts:135:19",
+				"kind": "wrap",
+				"code": "wrap(() => {\n\t\t\tthrow new Error(`chaos-crash:${id}:${mark}`);\n\t\t}, user, 'chaos:crash')",
+				"scope": "UserEntity",
+				"fn": "wrap",
+				"instanceArg": "user",
+				"label": "chaos:crash",
+				"callbackScopeId": "src/chaos.controller.ts:135:24",
+				"scopeId": "src/chaos.controller.ts:117:2",
+				"wrapsTypePath": "UserEntity"
+			}
+		]
+	}
+}

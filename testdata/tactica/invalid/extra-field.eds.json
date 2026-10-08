@@ -1,0 +1,1 @@
+{"version": "1.0", "eds": {"Unknown": [{"location": "src/a.ts:1:1", "kind": "wrap", "code": "wrap(fn)", "bogus": true}]}}

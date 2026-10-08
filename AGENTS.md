@@ -9,6 +9,15 @@ The cross-language lineage contract: `lineage.schema.json` +
 mnemonica port (Go, JavaScript, Python, …) exports instance lineage in
 one format. See [`README.md`](./README.md) for the shape and meaning.
 
+A second contract lives in `tactica/`: the JSON Schemas for the six
+`.tactica/` files — the three type-graph files (`hierarchy.json`,
+`definitions.json`, `collections.json`) plus the analysis files
+(`usages.json`, `flow.json`, `eds.json`) — described by
+`tactica/README.md` and exercised against recorded samples in
+`testdata/tactica/`. The same cross-language rule applies — any schema
+change must be writable by every generator (tactica, `mnemonica.stubgen`,
+`mnemonica-gen`).
+
 ## The contract rules (non-negotiable)
 
 1. **The schema is a cross-language contract.** Any change to

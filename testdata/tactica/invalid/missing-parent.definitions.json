@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-10-03T00:00:00.000Z",
+  "definitions": {
+    "Order": {
+      "name": "Order",
+      "location": "src/models.ts:10:1",
+      "kind": "define",
+      "strictChain": true,
+      "blockErrors": false
+    }
+  }
+}

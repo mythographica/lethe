@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wentout.github.io/mnemonica-go/tactica/definitions.schema.json",
+  "title": "mnemonica .tactica definitions",
+  "description": "Per-type declaration metadata of one .tactica source (format version 1.0/1.1). Keys are fullPaths and must match hierarchy.json node fullPaths exactly; see tactica/README.md for the join rules.",
+  "type": "object",
+  "required": ["definitions"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "description": "Format version. Absent means 1.0 (pre-versioning and 1.0 outputs are identical in shape).",
+      "enum": ["1.0", "1.1"]
+    },
+    "generatedAt": {
+      "description": "ISO-8601 timestamp of generation. Informational only; readers must not require it.",
+      "type": "string"
+    },
+    "definitions": {
+      "description": "Map from fullPath to declaration info. May be empty when the source declares no types.",
+      "type": "object",
+      "additionalProperties": false,
+      "patternProperties": {
+        "": { "$ref": "#/$defs/definition" }
+      }
+    }
+  },
+  "$defs": {
+    "definition": {
+      "type": "object",
+      "required": ["name", "location", "kind", "parent", "strictChain", "blockErrors"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "The declared type name. Never collection-prefixed; equal to the last dotted segment of the entry key.",
+          "type": "string",
+          "minLength": 1
+        },
+        "location": {
+          "description": "`file:line:col`, 1-based line and column, relative to the project root (forward slashes). Files outside the project root may stay absolute.",
+          "type": "string",
+          "pattern": "^.+:[0-9]+:[0-9]+$"
+        },
+        "kind": {
+          "description": "How the type was declared. Generators write \"define\" (define()/lazy()) or \"decorate\" (@decorate()/Type.decorate()).",
+          "type": "string",
+          "minLength": 1
+        },
+        "parent": {
+          "description": "The parent type's fullPath, null at a root. Must match another key in this file (and a hierarchy.json node) when non-null.",
+          "type": ["string", "null"]
+        },
+        "strictChain": {
+          "description": "Whether the type chain enforces strict chaining semantics.",
+          "type": "boolean"
+        },
+        "blockErrors": {
+          "description": "Whether errors thrown during construction are blocked (swallowed into the chain).",
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

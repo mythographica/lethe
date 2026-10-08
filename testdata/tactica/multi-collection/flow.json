@@ -1,0 +1,37 @@
+{
+	"version": "1.0",
+	"flow": {
+		"LoggerService": [
+			{
+				"location": "src/services/LoggerService.ts:42:29",
+				"kind": "instantiation",
+				"code": "new LoggerService()",
+				"context": "new expression"
+			}
+		],
+		"LoggerTab": [
+			{
+				"location": "src/services/LoggerService.ts:84:21",
+				"kind": "instantiation",
+				"code": "new LoggerTabConstructor()",
+				"context": "new expression"
+			}
+		],
+		"toISOString": [
+			{
+				"location": "src/services/LoggerService.ts:220:21",
+				"kind": "instantiation",
+				"code": "new Date().toISOString()",
+				"context": "chained construction"
+			}
+		],
+		"Date": [
+			{
+				"location": "src/services/LoggerService.ts:220:21",
+				"kind": "instantiation",
+				"code": "new Date()",
+				"context": "new expression"
+			}
+		]
+	}
+}

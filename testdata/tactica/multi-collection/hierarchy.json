@@ -1,0 +1,52 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-09-28T01:30:47.181Z",
+  "roots": [
+    {
+      "name": "Instrumentation",
+      "fullPath": "collection_1::Instrumentation",
+      "location": "src/models/Instrumentation.ts:58:40",
+      "children": [
+        {
+          "name": "InstrumentationPoint",
+          "fullPath": "collection_1::Instrumentation.InstrumentationPoint",
+          "location": "src/models/Instrumentation.ts:119:53",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "LoggerTab",
+      "fullPath": "LoggerTab",
+      "location": "src/models/LoggerTab.ts:15:26",
+      "children": [
+        {
+          "name": "LogEntry",
+          "fullPath": "LoggerTab.LogEntry",
+          "location": "src/models/LoggerTab.ts:23:35",
+          "children": []
+        }
+      ]
+    },
+    {
+      "name": "Scene3D",
+      "fullPath": "collection_2::Scene3D",
+      "location": "src/models/Scene3D.ts:19:33",
+      "children": [
+        {
+          "name": "GraphNode3D",
+          "fullPath": "collection_2::Scene3D.GraphNode3D",
+          "location": "src/models/Scene3D.ts:113:36",
+          "children": [
+            {
+              "name": "Tooltip3D",
+              "fullPath": "collection_2::Scene3D.GraphNode3D.Tooltip3D",
+              "location": "src/models/Scene3D.ts:148:38",
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

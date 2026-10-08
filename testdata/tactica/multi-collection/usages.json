@@ -1,0 +1,65 @@
+{
+	"version": "1.0",
+	"usages": {
+		"LoggerTab": [
+			{
+				"location": "src/services/LoggerService.ts:82:32",
+				"kind": "lookup",
+				"code": "lookup('LoggerTab')",
+				"holderScopeId": "src/services/LoggerService.ts:78:2"
+			},
+			{
+				"location": "src/services/LoggerService.ts:84:21",
+				"kind": "instantiation",
+				"code": "new LoggerTabConstructor()",
+				"constructorText": "LoggerTabConstructor",
+				"holderScopeId": "src/services/LoggerService.ts:78:2"
+			}
+		],
+		"LoggerTab.LogEntry": [
+			{
+				"location": "src/services/LoggerService.ts:245:18",
+				"kind": "instantiation",
+				"code": "new this.loggerTab.LogEntry({\n\t\t\t\tlevel: level.toLowerCase() as 'info' | 'warning' | 'error',\n\t\t\t\tme",
+				"constructorText": "this.loggerTab.LogEntry",
+				"holderScopeId": "src/services/LoggerService.ts:219:2"
+			},
+			{
+				"location": "src/services/LoggerService.ts:245:22",
+				"kind": "propertyAccess",
+				"code": "this.loggerTab.LogEntry",
+				"holderScopeId": "src/services/LoggerService.ts:219:2"
+			}
+		],
+		"Main": [
+			{
+				"location": "src/core/MainOrchestrator.ts:43:16",
+				"kind": "lookup",
+				"code": "lookup('Main')",
+				"holderScopeId": "src/core/MainOrchestrator.ts:42:2"
+			},
+			{
+				"location": "src/core/MainOrchestrator.ts:44:15",
+				"kind": "instantiation",
+				"code": "new Main(version)",
+				"constructorText": "Main",
+				"holderScopeId": "src/core/MainOrchestrator.ts:42:2"
+			}
+		],
+		"Registry": [
+			{
+				"location": "src/core/MainOrchestrator.ts:46:20",
+				"kind": "lookup",
+				"code": "lookup('Registry')",
+				"holderScopeId": "src/core/MainOrchestrator.ts:42:2"
+			},
+			{
+				"location": "src/core/MainOrchestrator.ts:47:19",
+				"kind": "instantiation",
+				"code": "new Registry()",
+				"constructorText": "Registry",
+				"holderScopeId": "src/core/MainOrchestrator.ts:42:2"
+			}
+		]
+	}
+}

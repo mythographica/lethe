@@ -1,0 +1,46 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-09-16T08:30:38.985Z",
+  "definitions": {
+    "ToDoItem": {
+      "name": "ToDoItem",
+      "location": "src/types.ts:12:1",
+      "kind": "decorate",
+      "parent": null,
+      "strictChain": false,
+      "blockErrors": false
+    },
+    "ToDoItem.Validated": {
+      "name": "Validated",
+      "location": "src/types.ts:27:1",
+      "kind": "decorate",
+      "parent": "ToDoItem",
+      "strictChain": false,
+      "blockErrors": false
+    },
+    "ToDoItem.Validated.Saved": {
+      "name": "Saved",
+      "location": "src/types.ts:40:1",
+      "kind": "decorate",
+      "parent": "ToDoItem.Validated",
+      "strictChain": false,
+      "blockErrors": false
+    },
+    "LoadedToDo": {
+      "name": "LoadedToDo",
+      "location": "src/types.ts:90:1",
+      "kind": "decorate",
+      "parent": null,
+      "strictChain": false,
+      "blockErrors": false
+    },
+    "LoadedToDo.LoadedSaved": {
+      "name": "LoadedSaved",
+      "location": "src/types.ts:109:1",
+      "kind": "decorate",
+      "parent": "LoadedToDo",
+      "strictChain": false,
+      "blockErrors": false
+    }
+  }
+}

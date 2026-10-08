@@ -51,6 +51,19 @@ Each node carries:
   …) export as tagged placeholders `{ "$mnemonica": "unsupported",
   "kind": … }` — never an error.
 
+## The .tactica contract
+
+Next to the lineage contract, lethe holds a second one: the
+`tactica/` directory with JSON Schemas (draft 2020-12) for the three
+type-graph files every mnemonica generator writes into a `.tactica/`
+directory — `hierarchy.json`, `definitions.json`, `collections.json`
+(format versions "1.0" and "1.1"). `tactica/README.md` carries the
+rules a schema cannot say (how `fullPath` is built, the
+`collection_N::` prefix, `file:line:col` locations, cross-file joins),
+and `testdata/tactica/` holds recorded real-world samples the schemas
+must accept. Generators validate their fresh output against these
+schemas in their own test suites.
+
 ## Using lethe
 
 Implementations depend on lethe as a devDependency, validate their export

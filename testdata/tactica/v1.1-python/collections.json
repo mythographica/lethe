@@ -1,0 +1,12 @@
+{
+  "version": "1.1",
+  "generatedAt": "2026-10-03T00:00:00.000Z",
+  "collections": [
+    {
+      "id": null,
+      "name": "defaultTypes",
+      "location": null,
+      "language": "python"
+    }
+  ]
+}

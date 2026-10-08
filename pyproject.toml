@@ -28,4 +28,4 @@ Issues = "https://github.com/mythographica/lethe/issues"
 packages = ["mnemonica_lethe"]
 
 [tool.setuptools.package-data]
-mnemonica_lethe = ["*.json", "data/*.json", "py.typed"]
+mnemonica_lethe = ["*.json", "data/*.json", "tactica/*.json", "py.typed"]

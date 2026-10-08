@@ -1,0 +1,88 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wentout.github.io/mnemonica-go/tactica/eds.schema.json",
+  "title": "mnemonica .tactica eds",
+  "description": "Dive wrap sites and context consumes of one .tactica source (format version 1.0/1.1) — the execution-delegation crossroads, present only where dive exists in the source's stack. Keys are type names or the literal \"unknown\"; see tactica/README.md.",
+  "type": "object",
+  "required": ["eds"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "description": "Format version. Absent means 1.0 (pre-versioning and 1.0 outputs are identical in shape).",
+      "enum": ["1.0", "1.1"]
+    },
+    "generatedAt": {
+      "description": "ISO-8601 timestamp of generation. Informational only; readers must not require it.",
+      "type": "string"
+    },
+    "eds": {
+      "description": "One entry array per owning type name (dotted paths where the generator emits them); sites that could not be attributed to a type sit under \"unknown\".",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/edsList" }
+    }
+  },
+  "$defs": {
+    "edsList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/edsEntry" }
+    },
+    "edsEntry": {
+      "type": "object",
+      "required": ["location", "kind", "code"],
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "description": "`file:line:col`, 1-based, relative to the project root — see tactica/README.md \"location\".",
+          "type": "string",
+          "pattern": "^.+:[0-9]+:[0-9]+$"
+        },
+        "kind": {
+          "description": "The crossroads shape, as emitted by generators today: \"wrap\" (a dive wrap() call), \"contextConsume\" (reading dive context, e.g. getFlow(error)), \"hookAttach\" (registerHook and friends). Open string — readers tolerate values they do not know rather than failing.",
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "description": "The site as source text (may span lines). Never truncated by the generator.",
+          "type": "string"
+        },
+        "fn": {
+          "description": "The dive function called (\"wrap\", ...). Present on wrap sites in current output.",
+          "type": "string"
+        },
+        "label": {
+          "description": "The wrap(fn, label) grouping label, when one was given.",
+          "type": "string"
+        },
+        "scope": {
+          "description": "The mnemonica scope name the site belongs to, when resolvable.",
+          "type": "string"
+        },
+        "scopeId": {
+          "description": "The creation-graph scopeId of the wrapping scope (file path or `file:line:col`).",
+          "type": "string"
+        },
+        "callbackScopeId": {
+          "description": "The creation-graph scopeId of the wrapped callback body, when it forms its own scope.",
+          "type": "string"
+        },
+        "instanceArg": {
+          "description": "The context expression passed as the wrap context (variable name or expression text).",
+          "type": "string"
+        },
+        "via": {
+          "description": "The enclosing wrap site this nested wrap was reached through.",
+          "type": "string"
+        },
+        "wrapsTypePath": {
+          "description": "The mnemonica type path the wrapped callback is attributed to, when resolvable.",
+          "type": "string"
+        },
+        "createsTypes": {
+          "description": "Mnemonica type names constructed inside the wrapped callback, when discovered.",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}

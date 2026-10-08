@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wentout.github.io/mnemonica-go/tactica/usages.schema.json",
+  "title": "mnemonica .tactica usages",
+  "description": "Per-type usage sites (lookups, instantiations, property accesses) of one .tactica source (format version 1.0/1.1). Keys are type names (short names, NOT collection-qualified fullPaths — usages predate the prefix and mnemographica joins them loosely); see tactica/README.md.",
+  "type": "object",
+  "required": ["usages"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "description": "Format version. Absent means 1.0 (pre-versioning and 1.0 outputs are identical in shape).",
+      "enum": ["1.0", "1.1"]
+    },
+    "generatedAt": {
+      "description": "ISO-8601 timestamp of generation. Informational only; readers must not require it.",
+      "type": "string"
+    },
+    "usages": {
+      "description": "One entry array per used type, keyed by the name as written at the use site (short names or dotted paths; generators may prefix custom-collection types with their collectionId). A type with no discovered usages simply has no key.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/usageList" }
+    }
+  },
+  "$defs": {
+    "usageList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/usage" }
+    },
+    "usage": {
+      "type": "object",
+      "required": ["location", "kind", "code", "holderScopeId"],
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "description": "`file:line:col`, 1-based, relative to the project root — see tactica/README.md \"location\".",
+          "type": "string",
+          "pattern": "^.+:[0-9]+:[0-9]+$"
+        },
+        "kind": {
+          "description": "The usage shape, as emitted by generators today: \"lookup\" (lookup('X')), \"instantiation\" (new X(...)), \"propertyAccess\" (X.staticMember or X itself as a value). Open string — readers tolerate values they do not know rather than failing.",
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "description": "The usage site as source text (may span lines). Never truncated by the generator.",
+          "type": "string"
+        },
+        "constructorText": {
+          "description": "The constructor expression exactly as written (e.g. \"UserEntity\" for new UserEntity(...)). Present on instantiation usages only.",
+          "type": "string"
+        },
+        "holderScopeId": {
+          "description": "The scope holding the use: a file path, or `file:line:col` for function/method scopes — the creation-graph scopeId vocabulary.",
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

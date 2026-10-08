@@ -1,0 +1,62 @@
+{
+  "version": "1.0",
+  "generatedAt": "2026-09-28T01:30:47.094Z",
+  "definitions": {
+    "collection_1::Instrumentation": {
+      "name": "Instrumentation",
+      "location": "src/models/Instrumentation.ts:58:40",
+      "kind": "define",
+      "parent": null,
+      "strictChain": true,
+      "blockErrors": false
+    },
+    "collection_1::Instrumentation.InstrumentationPoint": {
+      "name": "InstrumentationPoint",
+      "location": "src/models/Instrumentation.ts:119:53",
+      "kind": "define",
+      "parent": "collection_1::Instrumentation",
+      "strictChain": true,
+      "blockErrors": false
+    },
+    "LoggerTab": {
+      "name": "LoggerTab",
+      "location": "src/models/LoggerTab.ts:15:26",
+      "kind": "define",
+      "parent": null,
+      "strictChain": true,
+      "blockErrors": false
+    },
+    "LoggerTab.LogEntry": {
+      "name": "LogEntry",
+      "location": "src/models/LoggerTab.ts:23:35",
+      "kind": "define",
+      "parent": "LoggerTab",
+      "strictChain": true,
+      "blockErrors": false
+    },
+    "collection_2::Scene3D": {
+      "name": "Scene3D",
+      "location": "src/models/Scene3D.ts:19:33",
+      "kind": "define",
+      "parent": null,
+      "strictChain": true,
+      "blockErrors": false
+    },
+    "collection_2::Scene3D.GraphNode3D": {
+      "name": "GraphNode3D",
+      "location": "src/models/Scene3D.ts:113:36",
+      "kind": "define",
+      "parent": "collection_2::Scene3D",
+      "strictChain": true,
+      "blockErrors": false
+    },
+    "collection_2::Scene3D.GraphNode3D.Tooltip3D": {
+      "name": "Tooltip3D",
+      "location": "src/models/Scene3D.ts:148:38",
+      "kind": "define",
+      "parent": "collection_2::Scene3D.GraphNode3D",
+      "strictChain": true,
+      "blockErrors": false
+    }
+  }
+}

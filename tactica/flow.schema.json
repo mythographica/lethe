@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wentout.github.io/mnemonica-go/tactica/flow.schema.json",
+  "title": "mnemonica .tactica flow",
+  "description": "Native-instance flow sites (instantiations, argument passes, property reads/writes, method calls) of one .tactica source (format version 1.0/1.1). Keys are NATIVE type names (Error, Set, ...), not mnemonica types; see tactica/README.md.",
+  "type": "object",
+  "required": ["flow"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "description": "Format version. Absent means 1.0 (pre-versioning and 1.0 outputs are identical in shape).",
+      "enum": ["1.0", "1.1"]
+    },
+    "generatedAt": {
+      "description": "ISO-8601 timestamp of generation. Informational only; readers must not require it.",
+      "type": "string"
+    },
+    "flow": {
+      "description": "One entry array per type, keyed by name (native types like Error/Map and, where generators emit them, mnemonica dotted paths). A type with no discovered sites has no key.",
+      "type": "object",
+      "additionalProperties": { "$ref": "#/$defs/flowList" }
+    }
+  },
+  "$defs": {
+    "flowList": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/flowEntry" }
+    },
+    "flowEntry": {
+      "type": "object",
+      "required": ["location", "kind", "code"],
+      "additionalProperties": false,
+      "properties": {
+        "location": {
+          "description": "`file:line:col`, 1-based, relative to the project root — see tactica/README.md \"location\".",
+          "type": "string",
+          "pattern": "^.+:[0-9]+:[0-9]+$"
+        },
+        "kind": {
+          "description": "The flow shape, as emitted by generators today: \"instantiation\", \"passAsArg\", \"propertyRead\", \"propertyWrite\", \"methodCall\", \"spread\", \"return\", \"reassignment\". Open string — readers tolerate values they do not know rather than failing.",
+          "type": "string",
+          "minLength": 1
+        },
+        "code": {
+          "description": "The site as source text (may span lines). Never truncated by the generator.",
+          "type": "string"
+        },
+        "context": {
+          "description": "Short label of the enclosing construct (e.g. \"new expression\", a call signature). Present on instantiation/passAsArg sites in current output; optional everywhere.",
+          "type": "string"
+        },
+        "propertyName": {
+          "description": "The member being read/written/called. Present on propertyRead/propertyWrite/methodCall sites only.",
+          "type": "string"
+        },
+        "targetType": {
+          "description": "The declared type the value flows into or out of, when the generator could resolve one. Optional; a generator that cannot resolve it omits the field (never null).",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

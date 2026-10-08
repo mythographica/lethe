@@ -69,3 +69,26 @@ func TestLineageFixtureREADME(t *testing.T) {
 		t.Error("the fixture README must document the first-encounter id mapping")
 	}
 }
+
+// TestTacticaSchemas: all six .tactica schemas are embedded, parse as JSON
+// objects, and carry their contract title. Full schema-VALIDATION lives in
+// the validators (lethe's own npm suite); this module stays stdlib-only.
+func TestTacticaSchemas(t *testing.T) {
+	for _, name := range TacticaSchemaNames {
+		doc, err := TacticaSchemaJSON(name)
+		if err != nil {
+			t.Fatalf("tactica schema %q: %v", name, err)
+		}
+		title, ok := doc["title"].(string)
+		if !ok || title == "" {
+			t.Errorf("tactica schema %q has no title", name)
+		}
+		props, ok := doc["properties"].(map[string]any)
+		if !ok {
+			t.Fatalf("tactica schema %q has no properties", name)
+		}
+		if _, ok := props["version"]; !ok {
+			t.Errorf("tactica schema %q properties missing \"version\"", name)
+		}
+	}
+}

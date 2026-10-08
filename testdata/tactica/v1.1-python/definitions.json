@@ -1,0 +1,22 @@
+{
+  "version": "1.1",
+  "generatedAt": "2026-10-03T00:00:00.000Z",
+  "definitions": {
+    "Order": {
+      "name": "Order",
+      "location": "src/models/order.py:10:1",
+      "kind": "define",
+      "parent": null,
+      "strictChain": true,
+      "blockErrors": false
+    },
+    "Order.PaidOrder": {
+      "name": "PaidOrder",
+      "location": "src/models/order.py:25:1",
+      "kind": "define",
+      "parent": "Order",
+      "strictChain": true,
+      "blockErrors": false
+    }
+  }
+}
