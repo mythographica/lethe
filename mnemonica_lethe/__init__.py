@@ -5,7 +5,7 @@ SAME files, via symlinks, through importlib.resources — so every port can
 validate its exports against the contract and reproduce the fixture.
 
 The `.tactica` type-graph schemas (hierarchy/definitions/collections plus
-the analysis files usages/flow/eds) ship under `tactica/` the same way.
+the analysis files usages/flow/eds/control) ship under `tactica/` the same way.
 """
 
 from importlib.resources import files
@@ -36,6 +36,7 @@ TACTICA_SCHEMA_RESOURCES = (
     "usages.schema.json",
     "flow.schema.json",
     "eds.schema.json",
+    "control.schema.json",
 )
 
 
@@ -83,7 +84,7 @@ def tactica_schema_path(name: str) -> str:
     """Filesystem path of one .tactica schema (the same file, not a copy).
 
     `name` is the file base: "hierarchy", "definitions", "collections",
-    "usages", "flow" or "eds".
+    "usages", "flow", "eds" or "control".
     """
     result = str(files(__name__).joinpath("tactica").joinpath(f"{name}.schema.json"))
     return result

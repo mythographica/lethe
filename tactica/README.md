@@ -8,18 +8,19 @@ into a `.tactica/` directory: tactica (TypeScript), and later the Python
 suite validates its fresh output against these schemas — a mismatch fails
 a test instead of silently breaking the graph a reader builds.
 
-`tactica/usages.schema.json`, `tactica/flow.schema.json` and
-`tactica/eds.schema.json` are the same contract for the three analysis
-files (usage sites, native-instance flow, dive wrap sites), drafted from
-what tactica writes today. Their entry `kind` fields are open strings —
-the observed values are documented per schema, and readers tolerate values
-they do not know rather than failing.
+`tactica/usages.schema.json`, `tactica/flow.schema.json`,
+`tactica/eds.schema.json` and `tactica/control.schema.json` are the same
+contract for the four analysis files (usage sites, native-instance flow,
+dive wrap sites, control flow), drafted from what tactica writes today.
+Their entry `kind` fields are open strings — the observed values are
+documented per schema, and readers tolerate values they do not know rather
+than failing.
 
 `version` is `"1.0"` or `"1.1"`; readers accept both. Absent `version`
 means 1.0 (pre-versioning output is identical in shape to 1.0).
 Incompatible changes mean a new version string, never a silent edit.
 
-## The six files
+## The seven files
 
 | file | content | required files? |
 |---|---|---|
@@ -29,14 +30,45 @@ Incompatible changes mean a new version string, never a silent edit.
 | `usages.json` | per-type usage sites (lookup/instantiation/propertyAccess), keyed by short type name | no |
 | `flow.json` | native-instance flow sites (instantiation/passAsArg/propertyRead/...), keyed by native type name | no |
 | `eds.json` | dive wrap sites + context consumes, keyed by owning type name or `"unknown"`; absent where the source has no dive | no |
+| `control.json` | control flow: `callers` (the call paths from entry points to constructor invocations) and plugin-supplied `points` | no |
 
 A `.tactica/` directory may contain any subset (a TypeScript-less source
 writes none of them; a graph-only consumer reads `hierarchy.json` alone).
-The remaining `.tactica/` files (`types.ts`, `instrumentation.json`,
-`scopes.json`, `modules.json`) are NOT part of this contract: `types.ts`
-is TypeScript-only by definition, `instrumentation.json` `points` are
-parked (see plan boundary-cleanup step 2), and scopes/modules keep their
-own evolution cadence.
+The remaining `.tactica/` files are NOT part of this contract:
+`types.ts`/`registry.ts` are the TypeScript rendering of what
+`definitions.json` carries (name → location, parent, `fields`, `args`),
+and `scopes.json`/`modules.json` are generator-internal working data —
+the scopeIds that reach readers are self-describing (see `scopeId`
+below).
+
+### `control.json`
+
+Data flow is the runtime lineage — which instance came from which.
+`control.json` is the control flow that makes it happen, found statically:
+
+- `callers.anchors` — every constructor invocation site (`new X`), pinned
+  to the scope holding it (`holderScopeId`), with the constructed type's
+  fullPath (`typePath`) and, when known, the constructor text as written,
+  the variable bound to the new instance, and that variable's first
+  reassignment (`terminatedAt`). `rooted: true` marks an invocation at a
+  file's top level.
+- `callers.nodes` — the scopes holding an invocation or sitting on a call
+  path to one, walked outward until no caller remains; those carry
+  `starter: true` — the application's entry points, often scopes a
+  framework calls. Node `kind` is an open string: tactica writes
+  `module`/`function`/`method`/`arrow`; other languages add their own.
+- `callers.edges` — `caller → callee`, the callee closer to the
+  invocation. Paths may cycle; readers must not assume a tree.
+- `points` — framework steps around the entry points (guards,
+  interceptors, pipes, filters, middleware for the nestjs plugin),
+  supplied only by generator plugins: absent or empty without one. `kind`
+  and `scope` are open strings, so each language's plugins bring their
+  own.
+
+`scopeId` is a scope's identity: the file path for a file's top level,
+`file:line:col` of the scope start for a function, method or closure. It
+is the same vocabulary in `usages.json` (`holderScopeId`), `eds.json`
+(`scopeId`, `callbackScopeId`) and `control.json`.
 
 ## Rules a schema cannot say
 
@@ -82,6 +114,12 @@ that does not match is treated as unknown, never as fatal.
 - `hierarchy.json` nodes without a `definitions.json` entry (and vice
   versa) are tolerated by readers; the contract expects generators to
   emit both for every type they discover.
+- `control.json`: every edge's `caller` and `callee`, and every anchor's
+  `holderScopeId`, is a `callers.nodes` `scopeId`. Every anchor's
+  `location` is the `location` of an `instantiation` entry in
+  `usages.json`, and every such entry has its anchor; every usage's
+  `holderScopeId` is a node. `eds.json` scopeIds use the same vocabulary
+  but need not be nodes — a wrap site may sit off every invocation path.
 
 ### Required vs optional
 
@@ -97,7 +135,25 @@ that does not match is treated as unknown, never as fatal.
   `kind` is `"define"` (define()/lazy()) or `"decorate"`
   (@decorate()/Type.decorate()) in generator output; the schema keeps it
   an open string because readers tolerate other values rather than
-  failing.
+  failing. An entry may also carry `fields` (optional): the type's own
+  fields in declaration order, each `{ name, type, optional }`, where
+  `type` is source-language text for display. "Own" means declared ahead
+  of time by the type's definition — its `this` annotation, class body
+  or constructor assignments — not what its instance layer holds at
+  runtime; a field the parent also declares is listed again. Absent `fields` means not
+  recorded — a TypeScript reader falls back to `.tactica/types.ts`; an
+  empty array means the type has no fields. An entry may also carry
+  `args` (optional): the constructor's parameters in declaration order —
+  what it consumes to produce its fields — each
+  `{ name, type, optional?, kind? }`. The receiver (`this`, the parent
+  instance) is not listed; `parent` already names its type. `optional`
+  absent means false; a rest parameter carries none, since it may always
+  receive nothing. `kind` absent means an ordinary parameter; generators
+  write `"rest"` (TS `...xs`, Go `xs ...T`, Python `*args`, Java
+  `T... xs`), `"keywordRest"` (Python `**kwargs`), `"keywordOnly"` (a
+  Python parameter after `*`) or `"positionalOnly"` (a Python parameter
+  before `/`); readers tolerate other values. Absent `args` means not
+  recorded; an empty array means the constructor takes none.
 - `collections.json`: `id`, `name`, `location` are always present
   (`id`/`location` may be `null`, only for the default entry);
   `registryInterface` and `language` are optional.
@@ -106,8 +162,8 @@ that does not match is treated as unknown, never as fatal.
 
 - `collections[].language`: `"typescript" | "python" | "go"` —
   the language of that collection's codebase. Absent means `"typescript"`
-  (all 1.0 output is TypeScript). Each language codebase is its own
-  collection set; one `.tactica/` graph may mix languages.
+  (all 1.0 output is TypeScript). Each language codebase writes its own
+  `.tactica/`; readers open one at a time.
 - `collections[].registryInterface` becomes **optional** (a TypeScript
   interface name; meaningless for other languages). When present it is a
   non-empty string; when absent it is omitted, never `null`.
@@ -132,9 +188,13 @@ representative subsets, paths unchanged):
 - `decorate/` — `kind: "decorate"` chains (from test-core/todo-app);
 - `hierarchy-only/` — a directory shipping just `hierarchy.json`;
 - `eds/` — trimmed dive wrap sites (from tactica-nestjs's `.tactica/`);
+- `nestjs-control/` — `control.json` trimmed from tactica-nestjs's
+  `.tactica/` (two anchors with every caller path up to the starters, one
+  point per kind; the source writes the graph as `creationGraph` inside
+  `instrumentation.json`);
 - `v1.1-python/` — a hand-made 1.1 sample showing `language` and an
   absent `registryInterface`;
 - `invalid/` — hand-made samples that must be rejected.
 
-`npm test` compiles the three schemas and checks every sample: valid
-ones pass, invalid ones fail.
+`npm test` compiles the schemas and checks every sample: valid ones
+pass, invalid ones fail.

@@ -18,10 +18,7 @@
     "definitions": {
       "description": "Map from fullPath to declaration info. May be empty when the source declares no types.",
       "type": "object",
-      "additionalProperties": false,
-      "patternProperties": {
-        "": { "$ref": "#/$defs/definition" }
-      }
+      "additionalProperties": { "$ref": "#/$defs/definition" }
     }
   },
   "$defs": {
@@ -56,6 +53,61 @@
         "blockErrors": {
           "description": "Whether errors thrown during construction are blocked (swallowed into the chain).",
           "type": "boolean"
+        },
+        "fields": {
+          "description": "The type's own fields in declaration order — own meaning declared ahead of time by the type's definition (this annotation, class body or constructor assignments), not its runtime instance layer; a field the parent also declares is listed again. Optional: absent means the generator did not record them (a TypeScript reader may fall back to .tactica/types.ts); an empty array means the type has none.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/field" }
+        },
+        "args": {
+          "description": "The constructor's parameters in declaration order — what it consumes to produce its fields. The receiver (`this`, the parent instance) is not listed: `parent` names its type. Optional: absent means the generator did not record them; an empty array means the constructor takes none.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/arg" }
+        }
+      }
+    },
+    "field": {
+      "type": "object",
+      "required": ["name", "type", "optional"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "The field name as declared in the source language.",
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "description": "The field's type as source-language text (e.g. `string`, `[]int`, `list[str] | None`). Display only; readers never parse it.",
+          "type": "string"
+        },
+        "optional": {
+          "description": "Whether the field may be absent (TS `?`, a Python default/None, a Go pointer or omitempty — each generator documents its rule).",
+          "type": "boolean"
+        }
+      }
+    },
+    "arg": {
+      "type": "object",
+      "required": ["name", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "description": "The parameter name as declared in the source language.",
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "description": "The parameter's type as source-language text; for a rest parameter, the type as the language writes it. Display only; readers never parse it.",
+          "type": "string"
+        },
+        "optional": {
+          "description": "Whether the caller may omit the argument (TS `?` or a default value, a Python default — each generator documents its rule). Absent means false. A rest parameter carries no `optional`: it may always receive nothing.",
+          "type": "boolean"
+        },
+        "kind": {
+          "description": "How the parameter receives its value. Absent means an ordinary parameter. Generators write \"rest\" (the trailing positional rest: TS `...xs`, Go `xs ...T`, Python `*args`, Java `T... xs`), \"keywordRest\" (Python `**kwargs`: the leftover arguments passed by name), \"keywordOnly\" (a Python parameter after `*`, passed only by name) or \"positionalOnly\" (a Python parameter before `/`, passed only by position). An open string: readers tolerate values they do not know rather than failing.",
+          "type": "string",
+          "minLength": 1
         }
       }
     }

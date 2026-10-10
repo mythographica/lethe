@@ -50,7 +50,7 @@
           "type": "string"
         },
         "holderScopeId": {
-          "description": "The scope holding the use: a file path, or `file:line:col` for function/method scopes — the creation-graph scopeId vocabulary.",
+          "description": "The scope holding the use: a file path, or `file:line:col` for function/method scopes — the control.json scopeId vocabulary.",
           "type": "string",
           "minLength": 1
         }

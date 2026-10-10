@@ -58,11 +58,11 @@
           "type": "string"
         },
         "scopeId": {
-          "description": "The creation-graph scopeId of the wrapping scope (file path or `file:line:col`).",
+          "description": "The scopeId of the wrapping scope (file path or `file:line:col`) — the control.json scopeId vocabulary; it need not be a `callers` node.",
           "type": "string"
         },
         "callbackScopeId": {
-          "description": "The creation-graph scopeId of the wrapped callback body, when it forms its own scope.",
+          "description": "The scopeId of the wrapped callback body, when it forms its own scope — the control.json scopeId vocabulary; it need not be a `callers` node.",
           "type": "string"
         },
         "instanceArg": {

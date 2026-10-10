@@ -33,9 +33,9 @@ var LineageFixture []byte
 //go:embed testdata/lineage/README.md
 var LineageFixtureREADME string
 
-// TacticaSchemas are the six .tactica type-graph JSON Schemas (draft
+// TacticaSchemas are the seven .tactica type-graph JSON Schemas (draft
 // 2020-12): hierarchy, definitions, collections (the required structure
-// files) plus usages, flow, eds (the analysis files). Same distribution
+// files) plus usages, flow, eds, control (the analysis files). Same distribution
 // idea as LineageSchema — one embedded source of truth for every
 // generator's test suite.
 //
@@ -45,11 +45,12 @@ var TacticaSchemas embed.FS
 // TacticaSchemaNames lists the .tactica schema bases, in contract order.
 var TacticaSchemaNames = []string{
 	"hierarchy", "definitions", "collections",
-	"usages", "flow", "eds",
+	"usages", "flow", "eds", "control",
 }
 
 // TacticaSchema returns one .tactica schema's bytes by base name
-// ("hierarchy", "definitions", "collections", "usages", "flow", "eds").
+// ("hierarchy", "definitions", "collections", "usages", "flow", "eds",
+// "control").
 func TacticaSchema(name string) ([]byte, error) {
 	return TacticaSchemas.ReadFile("tactica/" + name + ".schema.json")
 }

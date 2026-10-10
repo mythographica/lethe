@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://wentout.github.io/mnemonica-go/tactica/control.schema.json",
+  "title": "mnemonica .tactica control",
+  "description": "Control flow of one .tactica source (format version 1.1): `callers` — the call paths that lead to constructor invocations, walked outward from each creation site to the entry points — and `points`, framework steps supplied by generator plugins. Data flow is the runtime lineage; this file is what makes it happen. See tactica/README.md for the join rules.",
+  "type": "object",
+  "required": ["callers"],
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "description": "Format version. control.json is new in 1.1; absent means 1.1.",
+      "enum": ["1.1"]
+    },
+    "generatedAt": {
+      "description": "ISO-8601 timestamp of generation. Informational only; readers must not require it.",
+      "type": "string"
+    },
+    "callers": {
+      "description": "The call paths ending in constructor invocations.",
+      "type": "object",
+      "required": ["nodes", "edges", "anchors"],
+      "additionalProperties": false,
+      "properties": {
+        "nodes": {
+          "description": "Scopes that hold a constructor invocation or sit on a call path to one.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/node" }
+        },
+        "edges": {
+          "description": "Calls between nodes, caller → callee, the callee being closer to the invocation site.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/edge" }
+        },
+        "anchors": {
+          "description": "The constructor invocation sites, each pinned to the node holding it.",
+          "type": "array",
+          "items": { "$ref": "#/$defs/anchor" }
+        }
+      }
+    },
+    "points": {
+      "description": "Framework steps around the entry points (e.g. guards, interceptors, pipes, filters, middleware), supplied by generator plugins. Absent or empty when no plugin supplied any.",
+      "type": "array",
+      "items": { "$ref": "#/$defs/point" }
+    }
+  },
+  "$defs": {
+    "location": {
+      "description": "`file:line:col`, 1-based, relative to the project root — see tactica/README.md \"location\".",
+      "type": "string",
+      "pattern": "^.+:[0-9]+:[0-9]+$"
+    },
+    "scopeId": {
+      "description": "A scope's identity: the file path for a file's top level, `file:line:col` of the scope start for a function, method or closure.",
+      "type": "string",
+      "minLength": 1
+    },
+    "node": {
+      "type": "object",
+      "required": ["scopeId", "name", "kind", "filePath", "location", "starter"],
+      "additionalProperties": false,
+      "properties": {
+        "scopeId": { "$ref": "#/$defs/scopeId" },
+        "name": {
+          "description": "Display label: the function name, `Type.method` for methods, the bound variable or property for closures, `file:line` for anonymous ones, the file path for a file's top level.",
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "description": "What the scope is. Generators write \"module\" (a file's top level), \"function\", \"method\", \"arrow\" (TS); other languages add their own (e.g. a Python lambda, a Go func literal). An open string: readers tolerate values they do not know rather than failing.",
+          "type": "string",
+          "minLength": 1
+        },
+        "filePath": {
+          "description": "The file holding the scope, relative to the project root.",
+          "type": "string",
+          "minLength": 1
+        },
+        "location": { "$ref": "#/$defs/location" },
+        "starter": {
+          "description": "True when no caller was found: an entry point of the application (often a scope a framework calls).",
+          "type": "boolean"
+        }
+      }
+    },
+    "edge": {
+      "type": "object",
+      "required": ["caller", "callee"],
+      "additionalProperties": false,
+      "properties": {
+        "caller": { "$ref": "#/$defs/scopeId" },
+        "callee": { "$ref": "#/$defs/scopeId" }
+      }
+    },
+    "anchor": {
+      "type": "object",
+      "required": ["location", "holderScopeId", "typePath"],
+      "additionalProperties": false,
+      "properties": {
+        "location": { "$ref": "#/$defs/location" },
+        "holderScopeId": { "$ref": "#/$defs/scopeId" },
+        "typePath": {
+          "description": "The fullPath of the type being constructed.",
+          "type": "string",
+          "minLength": 1
+        },
+        "constructorText": {
+          "description": "The constructor expression exactly as written at the site.",
+          "type": "string"
+        },
+        "rooted": {
+          "description": "True when the holder is a file's top level: an instance created at module scope. Absent means false.",
+          "type": "boolean"
+        },
+        "variable": {
+          "description": "The variable the new instance is bound to, when the generator can tell.",
+          "type": "string",
+          "minLength": 1
+        },
+        "terminatedAt": { "$ref": "#/$defs/location" }
+      }
+    },
+    "point": {
+      "type": "object",
+      "required": ["kind", "className", "location", "code", "scope", "targets"],
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "description": "The framework step. The nestjs plugin writes \"guard\", \"interceptor\", \"pipe\", \"filter\", \"middleware\". An open string: plugins of other languages and frameworks bring their own.",
+          "type": "string",
+          "minLength": 1
+        },
+        "className": {
+          "description": "The type providing the step (e.g. \"ValidationPipe\").",
+          "type": "string",
+          "minLength": 1
+        },
+        "location": { "$ref": "#/$defs/location" },
+        "code": {
+          "description": "The point's source text (signature or registration line).",
+          "type": "string"
+        },
+        "scope": {
+          "description": "Where the step attaches. The nestjs plugin writes \"global\", \"module\", \"controller:<Name>\", \"method:<Type>.<method>\". An open string.",
+          "type": "string",
+          "minLength": 1
+        },
+        "targets": {
+          "description": "Names of the types the step attaches to; empty for global steps.",
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

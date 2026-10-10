@@ -1,5 +1,5 @@
 'use strict';
-// The .tactica contract tests: the six schemas compile, every recorded
+// The .tactica contract tests: the seven schemas compile, every recorded
 // real-world sample validates against the schema it ships with, and
 // hand-made invalid samples are rejected. Generators (tactica, the Go and
 // Python ports) run the same validation against their own fresh output.
@@ -16,6 +16,7 @@ const schemas = {
 	usages: JSON.parse(readFileSync(join(root, 'tactica', 'usages.schema.json'), 'utf8')),
 	flow: JSON.parse(readFileSync(join(root, 'tactica', 'flow.schema.json'), 'utf8')),
 	eds: JSON.parse(readFileSync(join(root, 'tactica', 'eds.schema.json'), 'utf8')),
+	control: JSON.parse(readFileSync(join(root, 'tactica', 'control.schema.json'), 'utf8')),
 };
 const sampleRoot = join(root, 'testdata', 'tactica');
 
@@ -26,7 +27,7 @@ const samples = readdirSync(sampleRoot, { withFileTypes: true })
 	.filter((d) => d.isDirectory() && d.name !== 'invalid')
 	.map((d) => d.name);
 
-test('the three .tactica schemas compile', () => {
+test('the .tactica schemas compile', () => {
 	for (const [name, schema] of Object.entries(schemas)) {
 		compile(schema);
 	}

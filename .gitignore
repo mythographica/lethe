@@ -16,3 +16,6 @@ __pycache__/
 *.pyc
 dist/
 build/
+
+# local release notes
+PUBLISHING.md

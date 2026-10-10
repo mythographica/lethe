@@ -1,6 +1,6 @@
 {
 	"name": "@mnemonica/lethe",
-	"version": "0.2.0",
+	"version": "0.2.1",
 	"description": "Cross-language contracts for mnemonica: the lineage graph JSON Schema and the shared fixture every implementation (JS, Go, Python) must reproduce.",
 	"keywords": [
 		"mnemonica",

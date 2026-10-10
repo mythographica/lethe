@@ -70,7 +70,7 @@ func TestLineageFixtureREADME(t *testing.T) {
 	}
 }
 
-// TestTacticaSchemas: all six .tactica schemas are embedded, parse as JSON
+// TestTacticaSchemas: all seven .tactica schemas are embedded, parse as JSON
 // objects, and carry their contract title. Full schema-VALIDATION lives in
 // the validators (lethe's own npm suite); this module stays stdlib-only.
 func TestTacticaSchemas(t *testing.T) {
