@@ -54,10 +54,11 @@ Each node carries:
 ## The .tactica contract
 
 Next to the lineage contract, lethe holds a second one: the
-`tactica/` directory with JSON Schemas (draft 2020-12) for the three
-type-graph files every mnemonica generator writes into a `.tactica/`
-directory — `hierarchy.json`, `definitions.json`, `collections.json`
-(format versions "1.0" and "1.1"). `tactica/README.md` carries the
+`tactica/` directory with JSON Schemas (draft 2020-12) for the seven
+files every mnemonica generator writes into a `.tactica/` directory —
+the type graph (`hierarchy.json`, `definitions.json`,
+`collections.json`) and the analysis files (`usages.json`, `flow.json`,
+`eds.json`, `control.json`), format version "1.2". `tactica/README.md` carries the
 rules a schema cannot say (how `fullPath` is built, the
 `collection_N::` prefix, `file:line:col` locations, cross-file joins),
 and `testdata/tactica/` holds recorded real-world samples the schemas

@@ -2,14 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://wentout.github.io/mnemonica-go/tactica/control.schema.json",
   "title": "mnemonica .tactica control",
-  "description": "Control flow of one .tactica source (format version 1.1): `callers` — the call paths that lead to constructor invocations, walked outward from each creation site to the entry points — and `points`, framework steps supplied by generator plugins. Data flow is the runtime lineage; this file is what makes it happen. See tactica/README.md for the join rules.",
+  "description": "Control flow of one .tactica source (format version 1.2): `callers` — the call paths that lead to constructor invocations, walked outward from each creation site to the entry points — and `points`, framework steps supplied by generator plugins. Data flow is the runtime lineage; this file is what makes it happen. See tactica/README.md for the join rules.",
   "type": "object",
-  "required": ["callers"],
+  "required": ["version", "callers"],
   "additionalProperties": false,
   "properties": {
     "version": {
-      "description": "Format version. control.json is new in 1.1; absent means 1.1.",
-      "enum": ["1.1"]
+      "description": "Format version. Required; only \"1.2\" is accepted — an older .tactica is regenerated, not read.",
+      "enum": ["1.2"]
     },
     "generatedAt": {
       "description": "ISO-8601 timestamp of generation. Informational only; readers must not require it.",

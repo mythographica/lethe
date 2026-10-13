@@ -2,14 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://wentout.github.io/mnemonica-go/tactica/eds.schema.json",
   "title": "mnemonica .tactica eds",
-  "description": "Dive wrap sites and context consumes of one .tactica source (format version 1.0/1.1) — the execution-delegation crossroads, present only where dive exists in the source's stack. Keys are type names or the literal \"unknown\"; see tactica/README.md.",
+  "description": "Dive wrap sites and context consumes of one .tactica source (format version 1.2) — the execution-delegation crossroads, present only where dive exists in the source's stack. Keys are type names or the literal \"unknown\"; see tactica/README.md.",
   "type": "object",
-  "required": ["eds"],
+  "required": ["version", "eds"],
   "additionalProperties": false,
   "properties": {
     "version": {
-      "description": "Format version. Absent means 1.0 (pre-versioning and 1.0 outputs are identical in shape).",
-      "enum": ["1.0", "1.1"]
+      "description": "Format version. Required; only \"1.2\" is accepted — an older .tactica is regenerated, not read.",
+      "enum": ["1.2"]
     },
     "generatedAt": {
       "description": "ISO-8601 timestamp of generation. Informational only; readers must not require it.",

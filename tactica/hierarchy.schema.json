@@ -2,14 +2,14 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://wentout.github.io/mnemonica-go/tactica/hierarchy.schema.json",
   "title": "mnemonica .tactica hierarchy",
-  "description": "The type tree of one .tactica source (format version 1.0/1.1). Node identity is the dot-joined fullPath, optionally prefixed with the owning collection id (`collection_N::`); see tactica/README.md for the rules a schema cannot say.",
+  "description": "The type tree of one .tactica source (format version 1.2). Node identity is the dot-joined fullPath, optionally prefixed with the owning collection id (`collection_N::`); see tactica/README.md for the rules a schema cannot say.",
   "type": "object",
-  "required": ["roots"],
+  "required": ["version", "roots"],
   "additionalProperties": false,
   "properties": {
     "version": {
-      "description": "Format version. Absent means 1.0 (pre-versioning and 1.0 outputs are identical in shape).",
-      "enum": ["1.0", "1.1"]
+      "description": "Format version. Required; only \"1.2\" is accepted — an older .tactica is regenerated, not read.",
+      "enum": ["1.2"]
     },
     "generatedAt": {
       "description": "ISO-8601 timestamp of generation. Informational only; readers must not require it.",

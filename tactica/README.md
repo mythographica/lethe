@@ -16,9 +16,9 @@ Their entry `kind` fields are open strings — the observed values are
 documented per schema, and readers tolerate values they do not know rather
 than failing.
 
-`version` is `"1.0"` or `"1.1"`; readers accept both. Absent `version`
-means 1.0 (pre-versioning output is identical in shape to 1.0).
-Incompatible changes mean a new version string, never a silent edit.
+`version` is required and is `"1.2"`; the schemas accept nothing else.
+An older `.tactica/` is regenerated, not read. Incompatible changes mean
+a new version string, never a silent edit.
 
 ## The seven files
 
@@ -32,14 +32,12 @@ Incompatible changes mean a new version string, never a silent edit.
 | `eds.json` | dive wrap sites + context consumes, keyed by owning type name or `"unknown"`; absent where the source has no dive | no |
 | `control.json` | control flow: `callers` (the call paths from entry points to constructor invocations) and plugin-supplied `points` | no |
 
-A `.tactica/` directory may contain any subset (a TypeScript-less source
-writes none of them; a graph-only consumer reads `hierarchy.json` alone).
-The remaining `.tactica/` files are NOT part of this contract:
-`types.ts`/`registry.ts` are the TypeScript rendering of what
-`definitions.json` carries (name → location, parent, `fields`, `args`),
-and `scopes.json`/`modules.json` are generator-internal working data —
-the scopeIds that reach readers are self-describing (see `scopeId`
-below).
+A `.tactica/` directory may contain any subset (a graph-only consumer
+reads `hierarchy.json` alone). Any other file a generator writes into
+`.tactica/` — language bindings, internal working data — is NOT part of
+this contract, and readers never depend on it: everything they need is in
+the seven files above (the scopeIds that reach readers are
+self-describing, see `scopeId` below).
 
 ### `control.json`
 
@@ -95,8 +93,8 @@ string match on the fullPath.
 ### `location`
 
 Always `file:line:col` with **1-based** line and column, joined by
-colons, relative to the **project root** (the tsconfig directory for
-tactica), with forward slashes. Files outside the project root may stay
+colons, relative to the **project root** (the directory the generator
+analyzes), with forward slashes. Files outside the project root may stay
 absolute. The single exception: the default-collection entry in
 `collections.json` has `location: null` — the global registry has no
 declaration site. Readers parse with `^(.+):(\d+):(\d+)$`; a location
@@ -123,10 +121,9 @@ that does not match is treated as unknown, never as fatal.
 
 ### Required vs optional
 
-- Top-level `version` and `generatedAt` are **optional** in all three
-  files. `generatedAt` (ISO-8601) is informational; readers that use it
-  treat it as a freshness hint, not a validity gate. Hand-written and
-  pre-versioning files in the wild omit both.
+- Top-level `version` is **required** in all seven files; `generatedAt`
+  (ISO-8601) is optional and informational — readers that use it treat
+  it as a freshness hint, not a validity gate.
 - `hierarchy.json`: every node carries all four fields (`name`,
   `fullPath`, `location`, `children`); `children` is always present,
   possibly empty.
@@ -140,10 +137,9 @@ that does not match is treated as unknown, never as fatal.
   `type` is source-language text for display. "Own" means declared ahead
   of time by the type's definition — its `this` annotation, class body
   or constructor assignments — not what its instance layer holds at
-  runtime; a field the parent also declares is listed again. Absent `fields` means not
-  recorded — a TypeScript reader falls back to `.tactica/types.ts`; an
-  empty array means the type has no fields. An entry may also carry
-  `args` (optional): the constructor's parameters in declaration order —
+  runtime; a field the parent also declares is listed again. Absent
+  `fields` means not recorded; an empty array means the type has no
+  fields. An entry may also carry `args` (optional): the constructor's parameters in declaration order —
   what it consumes to produce its fields — each
   `{ name, type, optional?, kind? }`. The receiver (`this`, the parent
   instance) is not listed; `parent` already names its type. `optional`
@@ -154,46 +150,26 @@ that does not match is treated as unknown, never as fatal.
   Python parameter after `*`) or `"positionalOnly"` (a Python parameter
   before `/`); readers tolerate other values. Absent `args` means not
   recorded; an empty array means the constructor takes none.
-- `collections.json`: `id`, `name`, `location` are always present
-  (`id`/`location` may be `null`, only for the default entry);
-  `registryInterface` and `language` are optional.
-
-## Version 1.1 additions
-
-- `collections[].language`: `"typescript" | "python" | "go"` —
-  the language of that collection's codebase. Absent means `"typescript"`
-  (all 1.0 output is TypeScript). Each language codebase writes its own
-  `.tactica/`; readers open one at a time.
-- `collections[].registryInterface` becomes **optional** (a TypeScript
-  interface name; meaningless for other languages). When present it is a
-  non-empty string; when absent it is omitted, never `null`.
-
-## Decorated collection roots
-
-The schema has always required `definitions.json` keys to equal the
-hierarchy fullPaths — including the `collection_N::` prefix on
-`@MyCollection.decorate()` roots. An early tactica build keyed those
-definitions without the prefix (the root never joined between the two
-files); that was a generator bug, fixed 1.0-compatibly — the format did
-not change.
+- `collections.json`: `id`, `name`, `location` and `language` are
+  always present (`id`/`location` may be `null`, only for the default
+  entry). `language` is `"typescript" | "python" | "go"` — the language
+  of that collection's codebase; there is no default. Each language
+  codebase writes its own `.tactica/`; readers open one at a time.
 
 ## Samples
 
 `testdata/tactica/` holds recorded real-world output (trimmed to
-representative subsets, paths unchanged):
+representative subsets, paths unchanged, `version` set to `"1.2"`):
 
-- `multi-collection/` — default + two named collections with
-  `registryInterface` (from mnemographica's own `.tactica/`), plus trimmed
-  `usages.json`/`flow.json`;
+- `multi-collection/` — default + two named collections (from
+  mnemographica's own `.tactica/`), plus trimmed `usages.json`/`flow.json`;
 - `decorate/` — `kind: "decorate"` chains (from test-core/todo-app);
 - `hierarchy-only/` — a directory shipping just `hierarchy.json`;
 - `eds/` — trimmed dive wrap sites (from tactica-nestjs's `.tactica/`);
 - `nestjs-control/` — `control.json` trimmed from tactica-nestjs's
   `.tactica/` (two anchors with every caller path up to the starters, one
-  point per kind; the source writes the graph as `creationGraph` inside
-  `instrumentation.json`);
-- `v1.1-python/` — a hand-made 1.1 sample showing `language` and an
-  absent `registryInterface`;
+  point per kind);
+- `python/` — a hand-made sample of a Python collection;
 - `invalid/` — hand-made samples that must be rejected.
 
 `npm test` compiles the schemas and checks every sample: valid ones
